@@ -67,3 +67,28 @@ For more detailed information on how to implement and configure Azure Functions,
 [Azure Functions - Part 1 - Hosting and Networking Options](https://techcommunity.microsoft.com/blog/fasttrackforazureblog/azure-functions---part-1---hosting-and-networking-options/3746795)
 
 [Azure Functions - Part 2 - Unit and Integration Testing](https://techcommunity.microsoft.com/blog/fasttrackforazureblog/azure-functions---part-2---unit-and-integration-testing/3769764)
+
+## Git Commands
+
+```shell
+PS D:\> git init
+PS D:\> git config user.email "sxxxx@xxxx.com"
+PS D:\> git config user.name "xxxxx"
+PS D:\> git config --list
+```
+
+```shell
+gh auth status
+gh auth login
+gh repo create AzureFunctionCleanArchitecture --public
+```
+
+```shell
+git add *
+git commit -m "starting first commit"
+git branch -M main
+git remote add origin https://github.com/sorryb/AzureFunctionCleanArchitecture.git
+git push -u origin main
+
+git status
+```
