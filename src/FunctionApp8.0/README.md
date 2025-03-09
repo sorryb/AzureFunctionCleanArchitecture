@@ -41,9 +41,9 @@ Here is a high-level overview of an example function in the `FunctionApp8.0` pro
 
 ## Reference
 
-For more detailed information on how to implement and configure Azure Functions, refer to the official [Azure Functions documentation](https://docs.microsoft.com/en-us/azure/azure-functions/).
+> For more detailed information on how to implement and configure Azure Functions, refer to the official [Azure Functions documentation]> (https://docs.microsoft.com/en-us/azure/azure-functions/).
 
-[Azure Functions - Part 1 - Hosting and Networking Options](https://techcommunity.microsoft.com/blog/fasttrackforazureblog/azure-functions---part-1---hosting-and-networking-options/3746795)
+> [Azure Functions - Part 1 - Hosting and Networking Options](https://techcommunity.microsoft.com/blog/fasttrackforazureblog/azure-functions---part-1---hosting-and-networking-options/3746795)
 
-[Azure Functions - Part 2 - Unit and Integration Testing](https://techcommunity.microsoft.com/blog/fasttrackforazureblog/azure-functions---part-2---unit-and-integration-testing/3769764)
+> [Azure Functions - Part 2 - Unit and Integration Testing](https://techcommunity.microsoft.com/blog/fasttrackforazureblog/azure-functions---part-2---unit-and-integration-testing/3769764)
 
