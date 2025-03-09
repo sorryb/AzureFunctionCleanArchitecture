@@ -1,4 +1,4 @@
-﻿# Azure Function v4(.net8) and WEb App with Clean Architecture8
+﻿# Azure Function v4(.net8) and Web App with Clean Architecture .net8
 
 The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/CleanArchitecture8) version 8.0.6.
 
