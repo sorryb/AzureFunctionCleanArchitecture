@@ -1,0 +1,62 @@
+using System.Net;
+using CleanArchitecture8.Application.TodoLists.Queries.GetTodos;
+using CleanArchitecture8.Application.WeatherForecasts.Queries.GetWeatherForecasts;
+using MediatR;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+
+namespace CleanArchitecture.Presentation.FunctionApp8
+{
+    public class WeatherForecastsFunctions
+    {
+        private readonly IHttpRequestProcessor mediator;
+        private readonly ISender _sender;
+
+        public WeatherForecastsFunctions(IHttpRequestProcessor mediator, ISender sender)
+        {
+            this.mediator = mediator;
+            _sender = sender;
+        }
+
+        [OpenApiOperation(operationId: "Weather", tags: new[] { "greeting" }, Summary = "Get weather", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
+        // Add these three attribute classes above
+        [Function(nameof(GetWeatherForecasts))]
+        public async /*Task<HttpResponseData>*/Task<IEnumerable<WeatherForecast>> GetWeatherForecasts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "weather/forecasts")] HttpRequestData req,
+            FunctionContext executionContext)
+        {
+            var logger = executionContext.GetLogger<WeatherForecastsFunctions>();
+            logger.LogInformation("Called GetWeatherForecasts");
+
+            return await _sender.Send(new GetWeatherForecastsQuery());
+
+            //return await this.mediator.ExecuteAsync<GetWeatherForecastsQuery, IEnumerable<WeatherForecast>>(executionContext,
+            //                                                    req,
+            //                                                    new GetWeatherForecastsQuery(),
+            //                                                    (r) => req.CreateObjectResponseAsync(r));
+        }
+
+        [OpenApiOperation(operationId: "Weather", tags: new[] { "Get Weather" }, Summary = "Get weather", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
+        // Add these three attribute classes above
+        [Function(nameof(GetWeatherForecasts2) )]
+        public async Task<HttpResponseData> GetWeatherForecasts2([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "weather/forecasts2")] HttpRequestData req,
+    FunctionContext executionContext)
+        {
+            var logger = executionContext.GetLogger<WeatherForecastsFunctions>();
+            logger.LogInformation("Called GetWeatherForecasts");
+
+
+            return await this.mediator.ExecuteAsync<GetWeatherForecastsQuery, IEnumerable<WeatherForecast>>(executionContext,
+                                                                req,
+                                                                new GetWeatherForecastsQuery(),
+                                                                (r) => req.CreateObjectResponseAsync(r));
+        }
+    }
+}

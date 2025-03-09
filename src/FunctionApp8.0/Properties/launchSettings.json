@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "FunctionApp8._0": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7033",
+      "launchBrowser": false
+    }
+  }
+}

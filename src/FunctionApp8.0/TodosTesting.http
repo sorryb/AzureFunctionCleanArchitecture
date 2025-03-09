@@ -1,0 +1,44 @@
+Note: Requires REST Client for VSCode
+
+### Get TodoLists
+GET http://localhost:7033/api/todolists
+
+### GetTodoList with id 1
+GET http://localhost:7033/api/todolists/5
+
+### GetTodoList with id 1 as a csv output
+GET http://localhost:7033/api/todolists/3
+Content-Type: text/csv
+
+###
+POST http://localhost:7033/api/todolists
+Content-Type: application/json
+
+{
+    "title": "My Todo List7"
+}
+
+###
+POST http://localhost:7033/api/todolists/3/items
+Content-Type: application/json
+
+{
+    "title": "Feed the dog"
+}
+
+###
+PUT http://localhost:7033/api/todolists/2
+Content-Type: application/json
+
+{
+    "title": "My Todo List 2"
+}
+
+###
+DELETE http://localhost:7033/api/todolists/1
+
+###
+GET http://localhost:7033/api/weather/forecasts
+
+###
+GET http://localhost:7033/api/weather/forecasts2
