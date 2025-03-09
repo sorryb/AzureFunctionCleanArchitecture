@@ -57,9 +57,10 @@ dotnet test
 ## Help
 To learn more about the template go to the [project website](https://github.com/jasontaylordev/CleanArchitecture). Here you can find additional guidance, request new features, report a bug, and discuss the template with other users.
 
-[CleanArchitecture github](https://github.com/jasontaylordev/CleanArchitecture/tree/main)
-[Clean Architecture with ASP.NET Core 3.0 • Jason Taylor • GOTO 2019 - video](https://www.youtube.com/watch?v=dK4Yb6-LxAk)
-[Clean Architecture with .NET Core: Getting Started Jason Taylor](https://jasontaylor.dev/clean-architecture-getting-started/)
+* [CleanArchitecture github](https://github.com/jasontaylordev/CleanArchitecture/tree/main)
+* [Clean Architecture with ASP.NET Core 3.0 • Jason Taylor • GOTO 2019 - video](https://www.youtube.com/watch?v=dK4Yb6-LxAk)
+* [Clean Architecture with .NET Core: Getting Started Jason Taylor](https://jasontaylor.dev/clean-architecture-getting-started/)
+
 ### Reference
 
 For more detailed information on how to implement and configure Azure Functions, refer to the official [Azure Functions documentation](https://docs.microsoft.com/en-us/azure/azure-functions/).
