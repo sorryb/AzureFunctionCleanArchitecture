@@ -1,0 +1,8 @@
+Note: Requires 'REST Client' for VSCode
+
+
+### 
+GET http://localhost:7033/api/weather/forecasts
+
+### 
+GET http://localhost:7033/api/weather/forecasts2

@@ -1,7 +1,7 @@
 Note: Requires 'REST Client' for VSCode
 
 ### Get TodoLists
-GET http://localhost:7033/api/todolists
+GET http://localhost:7071/api/todolists
 
 ### GetTodoList with id 1
 GET http://localhost:7033/api/todolists/5
@@ -37,8 +37,3 @@ Content-Type: application/json
 ### 
 DELETE http://localhost:7033/api/todolists/1
 
-### 
-GET http://localhost:7033/api/weather/forecasts
-
-### 
-GET http://localhost:7033/api/weather/forecasts2

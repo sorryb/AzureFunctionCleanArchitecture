@@ -88,10 +88,9 @@ public class UserFunctions
     [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "The ID of the user to get", Description = "The ID of the user to get")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApplicationUser), Summary = "The response", Description = "This returns the response")]
     [Function("GetUser")]
-    public async Task<HttpResponseData> GetUser([HttpTrigger(AuthorizationLevel.Function, "get", Route = "user/{id}")] HttpRequestData req, string id)
+    public async Task<HttpResponseData> GetUser([HttpTrigger(AuthorizationLevel.Function, "get", Route = "user/{id}")] HttpRequestData req, Guid id)
     {
-        id = id.Trim('{', '}'); // Trim curly braces from the ID
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByIdAsync(id.ToString());
         var response = req.CreateResponse(user != null ? HttpStatusCode.OK : HttpStatusCode.NotFound);
 
         await response.WriteAsJsonAsync(user);
@@ -130,10 +129,9 @@ public class UserFunctions
     [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "The ID of the user to delete", Description = "The ID of the user to delete")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
     [Function("DeleteUser")]
-    public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "user/{id}")] HttpRequestData req, string id)
+    public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "user/{id}")] HttpRequestData req, Guid id)
     {
-        id = id.Trim('{', '}'); // Trim curly braces from the ID
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByIdAsync(id.ToString());
         if (user == null)
             return req.CreateResponse(HttpStatusCode.NotFound);
 

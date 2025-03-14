@@ -1,0 +1,14 @@
+Note: Requires 'REST Client' for VSCode
+
+### Get TodoItems for list with id 1
+GET http://localhost:7071/api/todolists/2
+
+### Create a new TodoItem in list with id 1
+POST http://localhost:7071/api/todolists/2/items
+Content-Type: application/json
+
+{
+    "title": "New Todo Item222"
+}
+
+
