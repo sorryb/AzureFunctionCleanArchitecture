@@ -1,5 +1,4 @@
 using System.Net;
-using CleanArchitecture8.Application.TodoLists.Queries.GetTodos;
 using CleanArchitecture8.Application.WeatherForecasts.Queries.GetWeatherForecasts;
 using MediatR;
 using Microsoft.Azure.Functions.Worker;
@@ -22,7 +21,7 @@ namespace CleanArchitecture.Presentation.FunctionApp8
             _sender = sender;
         }
 
-        [OpenApiOperation(operationId: "Weather", tags: new[] { "Get Weather" }, Summary = "Get weather", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "Weather", tags: RouteSectionName.Wheater, Summary = "Get weather", Description = "This shows a weather message.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
         // Add these three attribute classes above
@@ -41,7 +40,7 @@ namespace CleanArchitecture.Presentation.FunctionApp8
             //                                                    (r) => req.CreateObjectResponseAsync(r));
         }
 
-        [OpenApiOperation(operationId: "Weather", tags: new[] { "Get Weather randomlly" }, Summary = "Get weather", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "Weather", tags: RouteSectionName.Wheater, Summary = "Get weather", Description = "This shows a weather message.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
         // Add these three attribute classes above

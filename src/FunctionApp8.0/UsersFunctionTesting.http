@@ -1,7 +1,7 @@
 Note: Requires 'REST Client' for VSCode
 
 ### Register a new User
-POST http://localhost:7071/api/RegisterUser
+POST http://localhost:7071/api/user
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ### SignIn a User
-POST http://localhost:7071/api/SignIn
+POST http://localhost:7071/api/Sign-In
 Content-Type: application/json
 
 {
@@ -19,11 +19,11 @@ Content-Type: application/json
     "password": "Administrator1!"
 }
 
-### Get a User by email
-GET http://localhost:7071/api/GetUser?email=newuser@example.com
+### Get a User by id like bbe1a9d4-b480-4f89-9074-2f6971f5668d
+GET http://localhost:7071/api/user/{bbe1a9d4-b480-4f89-9074-2f6971f5668d}
 
 ### Update a User
-PUT http://localhost:7071/api/UpdateUser
+PUT http://localhost:7071/api/user
 Content-Type: application/json
 
 {
@@ -31,5 +31,8 @@ Content-Type: application/json
     "fullName": "Updated User"
 }
 
-### Delete a User
-DELETE http://localhost:7071/api/DeleteUser?email=newuser@example.com
+### Delete User by id like bbe1a9d4-b480-4f89-9074-2f6971f5668d
+DELETE http://localhost:7071/api/user/{bbe1a9d4-b480-4f89-9074-2f6971f5668d}
+//Authorization: Bearer {{token}}
+
+// Replace {id} with the actual user ID

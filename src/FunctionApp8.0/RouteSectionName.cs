@@ -19,6 +19,11 @@ public static class RouteSectionName
     /// Swagger Route Sections for all ToDo Items endpoints.
     /// </summary>
     public const string Item = "ToDo Items";
+
+        /// <summary>
+    /// Swagger Route Sections for all Wheater endpoints.
+    /// </summary>
+    public const string Wheater = "Wheater";
 }
 
 
