@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -72,6 +73,15 @@ public class HttpOpenApiConfigurationOptions : OpenApiConfigurationOptions
     {
         _version = version;
     }
+        /// <summary>
+    /// Include host name.
+    /// </summary>
+    public override bool IncludeRequestingHostName { get { return false; } }
+ 
+    /// <summary>
+    /// OpenAPI version.
+    /// </summary>
+    public override OpenApiVersionType OpenApiVersion { get { return OpenApiVersionType.V3; } }
 
     public override OpenApiInfo Info { get; set; } = new OpenApiInfo
     {

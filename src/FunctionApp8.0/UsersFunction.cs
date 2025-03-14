@@ -5,6 +5,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System.Net;
 using System.Net.Mime;
 
@@ -49,13 +50,19 @@ public class UserFunctions
         //administrator@localhost   Administrator1!
             //var result1 = await _signInManager.PasswordSignInAsync(requestBody["email"], requestBody["password"], false, false);
 
-            var requestBody = await System.Text.Json.JsonSerializer.DeserializeAsync<SignInUser>(req.Body) ?? new SignInUser(){Email = "", Password = ""};
+        using var reader = new StreamReader(req.Body);
+        var requestBody = await reader.ReadToEndAsync();
+        var requestUser = System.Text.Json.JsonSerializer.Deserialize<SignInUser>(requestBody, new System.Text.Json.JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        }) ?? new SignInUser() { Email = "", Password = "" };
 
-            var user = await _userManager.FindByNameAsync(requestBody.Email);
-            SignInResult? result = user == null
-                ? SignInResult.Failed
-                : await _userManager.CheckPasswordAsync(user, requestBody.Password) ? SignInResult.Success : SignInResult.Failed;
-                
+
+        var user = await _userManager.FindByNameAsync(requestUser.Email);
+        SignInResult? result = user == null
+            ? SignInResult.Failed
+            : await _userManager.CheckPasswordAsync(user, requestUser.Password) ? SignInResult.Success : SignInResult.Failed;
+
         var response = req.CreateResponse(result.Succeeded ? HttpStatusCode.OK : HttpStatusCode.Unauthorized);
 
             if (result.Succeeded)
@@ -124,5 +131,14 @@ public class UserFunctions
         return response;
     }
 }
+
+    public class SignInUser
+    {
+        [JsonProperty("email")]
+        public string Email { get; set; } = default!;
+
+       [JsonProperty("password")]
+        public string Password { get; set; }= default!;
+    }
 
 
