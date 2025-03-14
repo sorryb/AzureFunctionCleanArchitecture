@@ -14,6 +14,8 @@ The architecture is typically represented by a series of concentric circles, wit
 
 ## Project Structure
 
+![Clean Architecture Diagram](../../docs/img2go.com-Animated.gif)
+
 This project is an implementation of an Azure Function using Clean Architecture principles. The main components of the project are:
 
 - **Domain**: Contains the enterprise logic and types.
