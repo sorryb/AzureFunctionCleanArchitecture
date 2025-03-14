@@ -2,6 +2,11 @@
 
 The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/CleanArchitecture8) version 8.0.6.
 
+The presentation layer has two application:
+
+* Web Api C# application [ReadMe](./src/Web/ReadMe.md)
+* Azure Function v4 with .NET 8 application [ReadMe](./src/FunctionApp8.0/ReadMe.md)
+
 ## Build
 
 Run `dotnet build -tl` to build the solution.
