@@ -32,16 +32,19 @@ public static class DependencyInjection
 
         services.AddScoped<ApplicationDbContextInitialiser>();
 
+        services.AddHttpContextAccessor();
+
         services.AddAuthentication()
             .AddBearerToken(IdentityConstants.BearerScheme);
 
         services.AddAuthorizationBuilder();
-
+ 
         services
             .AddIdentityCore<ApplicationUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddApiEndpoints();
+        services.AddScoped<SignInManager<ApplicationUser>>();
 
         services.AddSingleton(TimeProvider.System);
         services.AddTransient<IIdentityService, IdentityService>();

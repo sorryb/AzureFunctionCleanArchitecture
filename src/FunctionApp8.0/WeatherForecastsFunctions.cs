@@ -22,7 +22,7 @@ namespace CleanArchitecture.Presentation.FunctionApp8
             _sender = sender;
         }
 
-        [OpenApiOperation(operationId: "Weather", tags: new[] { "greeting" }, Summary = "Get weather", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "Weather", tags: new[] { "Get Weather" }, Summary = "Get weather", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
         // Add these three attribute classes above
@@ -41,12 +41,12 @@ namespace CleanArchitecture.Presentation.FunctionApp8
             //                                                    (r) => req.CreateObjectResponseAsync(r));
         }
 
-        [OpenApiOperation(operationId: "Weather", tags: new[] { "Get Weather" }, Summary = "Get weather", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "Weather", tags: new[] { "Get Weather randomlly" }, Summary = "Get weather", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
         // Add these three attribute classes above
-        [Function(nameof(GetWeatherForecasts2) )]
-        public async Task<HttpResponseData> GetWeatherForecasts2([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "weather/forecasts2")] HttpRequestData req,
+        [Function(nameof(GetWeatherForecastsWithRequestProcessor) )]
+        public async Task<HttpResponseData> GetWeatherForecastsWithRequestProcessor([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "weather/forecasts2")] HttpRequestData req,
     FunctionContext executionContext)
         {
             var logger = executionContext.GetLogger<WeatherForecastsFunctions>();

@@ -29,6 +29,24 @@ The `FunctionApp8.0` project is the entry point for the Azure Function. It is re
 - **Bindings**: These define how data is passed to and from the function. For example, input bindings can be used to read data from a database, and output bindings can be used to write data to a storage account.
 - **Configuration**: This includes the settings and configurations required for the function to run, such as connection strings, API keys, and other environment variables.
 
+### Run from Visual Studio Code
+
+```bash
+# Install Azure Functions Core Tools
+npm install -g azure-functions-core-tools@4 --unsafe-perm true
+
+# Restore .NET dependencies (if applicable)
+dotnet restore
+
+# Start the Azure Functions runtime
+func start
+
+# or from bin directory
+cd ...bin
+func host start --no-build --port 7033
+
+```
+
 ### Example Function
 
 Here is a high-level overview of an example function in the `FunctionApp8.0` project:
