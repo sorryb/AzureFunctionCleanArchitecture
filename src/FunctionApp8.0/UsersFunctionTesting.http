@@ -5,9 +5,9 @@ POST http://localhost:7071/api/user
 Content-Type: application/json
 
 {
-    "email": "newuser@example.com",
+    "email": "newuser1@example.com",
     "password": "Password123!",
-    "fullName": "New User"
+    "fullName": "New User TEST"
 }
 
 ### SignIn a User
@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ### Get a User by id like bbe1a9d4-b480-4f89-9074-2f6971f5668d
-GET http://localhost:7071/api/user/{bbe1a9d4-b480-4f89-9074-2f6971f5668d}
+GET http://localhost:7071/api/user/{1d396555-4d92-48fe-ab1f-ccf3dfe1c083}
 
 ### Update a User
 PUT http://localhost:7071/api/user

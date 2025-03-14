@@ -36,9 +36,10 @@ public class UserFunctions
         var user = new ApplicationUser { UserName = requestBody["email"], Email = requestBody["email"], NormalizedUserName = requestBody["fullName"] };
 
         var result = await _userManager.CreateAsync(user, requestBody["password"]);
+        var userCreated = await _userManager.FindByNameAsync(user.Email);
         var response = req.CreateResponse(result.Succeeded ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
 
-        await response.WriteAsJsonAsync(result);
+        await response.WriteAsJsonAsync(userCreated);
         return response;
     }
 
