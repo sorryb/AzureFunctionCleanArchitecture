@@ -23,7 +23,7 @@ public class UserFunctions
     }
 
     [OpenApiOperation(operationId: "RegisterUser", tags: RouteSectionName.Users, Summary = "Register a new User", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
-    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+    [OpenApiSecurity(Permissions.OpenApiSecuritySettings.BearerAuthenticationTitle, SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = Permissions.OpenApiSecuritySettings.JsonWebToken)]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
     // Add these three attribute classes above
     [Function("RegisterUser")]
@@ -41,7 +41,7 @@ public class UserFunctions
 
     [OpenApiOperation(operationId: "SignIn", tags: RouteSectionName.Users, Summary = "User SignIn. This should returns a token.", Description = "Signs in a user with the provided credentials.", Visibility = OpenApiVisibilityType.Important)]
     [OpenApiRequestBody(contentType: MediaTypeNames.Application.Json, bodyType: typeof(SignInUser), Example = typeof(SignInUserExample), Description = "Details of the user for which we want an login.")]
-    //[OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SignInResult), Summary = "SignIn successful", Description = "Returns the result of the sign-in process.")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.Unauthorized, contentType: "application/json", bodyType: typeof(SignInResult), Summary = "SignIn failed", Description = "Returns the result of the sign-in process.")]
     [Function("SignIn")]
@@ -141,4 +141,25 @@ public class UserFunctions
         public string Password { get; set; }= default!;
     }
 
-
+   public static class Permissions
+    {
+        /// <summary>
+        ///API roles defined on a Azure App Registration which is the "Identity" of this Azure Function Application.
+        /// </summary>
+        public static class Roles
+        {
+            public const string ReadOnly = "Roles.Read.All";
+            public const string ReadOnlyUI = "Roles.Read.UIAll";
+            public const string ReadWrite = "Roles.ReadWrite.All";
+            public const string ReadWriteDelete = "Roles.ReadWriteDelete.All";
+        }
+ 
+        /// <summary>
+        /// OpenAPI settings for Authorisation.
+        /// </summary>
+        public static class OpenApiSecuritySettings
+        {
+            public const string BearerAuthenticationTitle = "Bearer_auth";
+            public const string JsonWebToken = "JWT";
+        }
+    }
