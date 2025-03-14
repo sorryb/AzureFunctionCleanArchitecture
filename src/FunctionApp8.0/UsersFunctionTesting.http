@@ -1,0 +1,35 @@
+Note: Requires 'REST Client' for VSCode
+
+### Register a new User
+POST http://localhost:7071/api/RegisterUser
+Content-Type: application/json
+
+{
+    "email": "newuser@example.com",
+    "password": "Password123!",
+    "fullName": "New User"
+}
+
+### SignIn a User
+POST http://localhost:7071/api/SignIn
+Content-Type: application/json
+
+{
+    "email": "newuser@example.com",
+    "password": "Password123!"
+}
+
+### Get a User by email
+GET http://localhost:7071/api/GetUser?email=newuser@example.com
+
+### Update a User
+PUT http://localhost:7071/api/UpdateUser
+Content-Type: application/json
+
+{
+    "email": "newuser@example.com",
+    "fullName": "Updated User"
+}
+
+### Delete a User
+DELETE http://localhost:7071/api/DeleteUser?email=newuser@example.com
