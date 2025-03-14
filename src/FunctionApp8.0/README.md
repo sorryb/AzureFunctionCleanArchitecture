@@ -14,7 +14,7 @@ The architecture is typically represented by a series of concentric circles, wit
 
 ## Project Structure
 
-![Clean Architecture Diagram](../../docs/img2go.com-Animated.gif)
+> ![Image](./docs/img2go.com-Animated.gif)
 
 This project is an implementation of an Azure Function using Clean Architecture principles. The main components of the project are:
 
@@ -24,7 +24,8 @@ This project is an implementation of an Azure Function using Clean Architecture 
 - **FunctionApp**: Contains the Azure Function entry points and configuration.
 
 ## Function App
-[OpenAPI swagger page ](../../docs/localhostPage.png)
+
+> ![OpenAPI swagger page ](./docs/localhostPage.png)
 
 The `FunctionApp8.0` project is the entry point for the Azure Function. It is responsible for handling HTTP requests, processing them, and returning appropriate responses. The main components of the `FunctionApp8.0` project are:
 
