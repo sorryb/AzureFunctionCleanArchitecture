@@ -25,3 +25,9 @@ Paste the JSON string containing your Azure credentials into the Value field. It
   "clientSecret": "your-client-secret",
   "tenantId": "your-tenant-id"
 }
+
+  (✓) Done: Resource group: rg-dev (574ms)
+  (✓) Done: Log Analytics workspace: log-iycwas4gyqdei (16.337s)
+  (✓) Done: Key Vault: kv-iycwas4gyqdei (17.974s)
+  (✓) Done: Application Insights: appi-iycwas4gyqdei (1.256s)
+  (✓) Done: Portal dashboard: dash-iycwas4gyqdei (632ms)
