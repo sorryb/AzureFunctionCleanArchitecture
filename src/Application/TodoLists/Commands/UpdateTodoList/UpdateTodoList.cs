@@ -2,7 +2,7 @@
 
 namespace CleanArchitecture8.Application.TodoLists.Commands.UpdateTodoList;
 
-public record UpdateTodoListCommand : IRequest,IRequest<Unit>
+public record UpdateTodoListCommand : IRequest
 {
     public int Id { get; init; }
 

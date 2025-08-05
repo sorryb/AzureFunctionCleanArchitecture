@@ -26,8 +26,10 @@ Paste the JSON string containing your Azure credentials into the Value field. It
   "tenantId": "your-tenant-id"
 }
 
-  (✓) Done: Resource group: rg-dev (574ms)
-  (✓) Done: Log Analytics workspace: log-iycwas4gyqdei (16.337s)
-  (✓) Done: Key Vault: kv-iycwas4gyqdei (17.974s)
-  (✓) Done: Application Insights: appi-iycwas4gyqdei (1.256s)
-  (✓) Done: Portal dashboard: dash-iycwas4gyqdei (632ms)
+  (✓) Done: Resource group: rg-dev (4.879s)
+  (✓) Done: Log Analytics workspace: log-2csrvw5o5dzbk (21.207s)
+  (✓) Done: Key Vault: kv-2csrvw5o5dzbk (24.106s)
+  (✓) Done: Application Insights: appi-2csrvw5o5dzbk (6.028s)
+  (✓) Done: Portal dashboard: dash-2csrvw5o5dzbk (1.726s)
+  (✓) Done: App Service plan: app-2csrvw5o5dzbk (9.027s)
+  (✓) Done: Azure SQL Server: sql-2csrvw5o5dzbk (52.124s)

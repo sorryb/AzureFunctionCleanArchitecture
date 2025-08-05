@@ -11,9 +11,9 @@ public static class RouteSectionName
     public const string Users = "Manage Users";
 
     /// <summary>
-    /// Swagger Route Sections for all ToDO endpoints.
+    /// Swagger Route Sections for all ToDO list endpoints.
     /// </summary>
-    public const string ToDo = "ToDo";
+    public const string ToDoLists = "ToDo Lists";
 
     /// <summary>
     /// Swagger Route Sections for all ToDo Items endpoints.

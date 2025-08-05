@@ -12,12 +12,12 @@ namespace CleanArchitecture.Presentation.FunctionApp8
 {
     public class WeatherForecastsFunctions
     {
-        private readonly IHttpRequestProcessor mediator;
+        private readonly IHttpRequestProcessor processor;
         private readonly ISender _sender;
 
         public WeatherForecastsFunctions(IHttpRequestProcessor mediator, ISender sender)
         {
-            this.mediator = mediator;
+            this.processor = mediator;
             _sender = sender;
         }
 
@@ -34,10 +34,6 @@ namespace CleanArchitecture.Presentation.FunctionApp8
 
             return await _sender.Send(new GetWeatherForecastsQuery());
 
-            //return await this.mediator.ExecuteAsync<GetWeatherForecastsQuery, IEnumerable<WeatherForecast>>(executionContext,
-            //                                                    req,
-            //                                                    new GetWeatherForecastsQuery(),
-            //                                                    (r) => req.CreateObjectResponseAsync(r));
         }
 
         [OpenApiOperation(operationId: "Weather", tags: RouteSectionName.Wheater, Summary = "Get weather", Description = "This shows a weather message.", Visibility = OpenApiVisibilityType.Important)]
@@ -52,7 +48,7 @@ namespace CleanArchitecture.Presentation.FunctionApp8
             logger.LogInformation("Called GetWeatherForecasts");
 
 
-            return await this.mediator.ExecuteAsync<GetWeatherForecastsQuery, IEnumerable<WeatherForecast>>(executionContext,
+            return await this.processor.ExecuteAsync<GetWeatherForecastsQuery, IEnumerable<WeatherForecast>>(executionContext,
                                                                 req,
                                                                 new GetWeatherForecastsQuery(),
                                                                 (r) => req.CreateObjectResponseAsync(r));

@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Mime;
 using CleanArchitecture8.Application.TodoLists.Commands.CreateTodoList;
 using CleanArchitecture8.Application.TodoLists.Commands.DeleteTodoList;
 using CleanArchitecture8.Application.TodoLists.Commands.UpdateTodoList;
@@ -27,7 +28,7 @@ namespace CleanArchitecture.Presentation.FunctionApp8
             _sender = sender;
         }
 
-        [OpenApiOperation(operationId: "ToDO", tags: RouteSectionName.ToDo, Summary = "GetTodos", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "ToDO", tags: RouteSectionName.ToDoLists, Summary = "GetTodos", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
         // Add these three attribute classes above
@@ -41,7 +42,7 @@ namespace CleanArchitecture.Presentation.FunctionApp8
             return await _sender.Send(new GetTodosQuery());
         }
 
-        [OpenApiOperation(operationId: "ToDO", tags: RouteSectionName.ToDo, Summary = "Get Todo List by Id", Description = "This shows a todo message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "ToDO", tags: RouteSectionName.ToDoLists, Summary = "Get Todo List by Id", Description = "This shows a todo message.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
         // Add these three attribute classes above
@@ -56,7 +57,7 @@ namespace CleanArchitecture.Presentation.FunctionApp8
             return await _sender.Send(new GetTodoQuery() { Id = id});
         }
 
-        [OpenApiOperation(operationId: "CreateTodosList", tags: RouteSectionName.ToDo, Summary = "Create Todos List", Description = "This shows a to do created message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "CreateTodosList", tags: RouteSectionName.ToDoLists, Summary = "Create Todos List", Description = "This shows a to do created message.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
         // Add these three attribute classes above
@@ -76,12 +77,13 @@ namespace CleanArchitecture.Presentation.FunctionApp8
             return await _sender.Send(command);
         }
 
-        [OpenApiOperation(operationId: "UpdateTodosList", tags: RouteSectionName.ToDo, Summary = "Update Todos List", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "UpdateTodosList", tags: RouteSectionName.ToDoLists, Summary = "Update Todos List", Description = "This shows a welcome message.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
-        // Add these three attribute classes above
+        [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The ID of the item")]
+        [OpenApiRequestBody(contentType: MediaTypeNames.Application.Json, bodyType: typeof(UpdateTodoListCommand), Example = typeof(UpdateTodoListCommand1Example), Description = "Details of the list for update.")]
         [Function(nameof(UpdateTodosList))]
-        public async Task<HttpResponseData> /*Task<IResult>*/ UpdateTodosList([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "todolists/{id}")]
+        public async /*Task<HttpResponseData>*/ Task<IResult> UpdateTodosList([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "todolists/{id}")]
                 HttpRequestData req,
             int id,
             FunctionContext functionContext)
@@ -95,20 +97,15 @@ namespace CleanArchitecture.Presentation.FunctionApp8
                 Title = todoList?.Title
             };
 
-            //if (id != command.Id) return Results.BadRequest();
-            //await _sender.Send(command);
-            //return Results.NoContent();
-
-            return await this.processor.ExecuteAsync<UpdateTodoListCommand, Unit>(functionContext,
-                                                                req,
-                                                                command,
-                                                                (r) => req.CreateResponseAsync());
+            if (id != command.Id) return Results.BadRequest();
+            await _sender.Send(command);
+            return Results.NoContent();
         }
 
-        [OpenApiOperation(operationId: "DeleteTodosList", tags: RouteSectionName.ToDo, Summary = "DeleteTodosList", Description = "This shows a delete message.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "DeleteTodosList", tags: RouteSectionName.ToDoLists, Summary = "DeleteTodosList", Description = "This shows a delete message.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
-        // Add these three attribute classes above
+        [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The ID of the item")]
         [Function(nameof(DeleteTodosList))]
         public async /*Task<HttpResponseData> */ Task<IResult>  DeleteTodosList([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "todolists/{id}")]
                 HttpRequestData req,
