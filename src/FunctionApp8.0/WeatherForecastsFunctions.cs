@@ -12,12 +12,10 @@ namespace CleanArchitecture.Presentation.FunctionApp8
 {
     public class WeatherForecastsFunctions
     {
-        private readonly IHttpRequestProcessor processor;
         private readonly ISender _sender;
 
-        public WeatherForecastsFunctions(IHttpRequestProcessor mediator, ISender sender)
+        public WeatherForecastsFunctions( ISender sender)
         {
-            this.processor = mediator;
             _sender = sender;
         }
 
@@ -41,17 +39,14 @@ namespace CleanArchitecture.Presentation.FunctionApp8
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Summary = "The response", Description = "This returns the response")]
         // Add these three attribute classes above
         [Function(nameof(GetWeatherForecastsWithRequestProcessor) )]
-        public async Task<HttpResponseData> GetWeatherForecastsWithRequestProcessor([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "weather/forecasts2")] HttpRequestData req,
+        public async Task<IEnumerable<WeatherForecast>> GetWeatherForecastsWithRequestProcessor([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "weather/forecasts2")] HttpRequestData req,
     FunctionContext executionContext)
         {
             var logger = executionContext.GetLogger<WeatherForecastsFunctions>();
             logger.LogInformation("Called GetWeatherForecasts");
 
+            return await _sender.Send(new GetWeatherForecastsQuery());
 
-            return await this.processor.ExecuteAsync<GetWeatherForecastsQuery, IEnumerable<WeatherForecast>>(executionContext,
-                                                                req,
-                                                                new GetWeatherForecastsQuery(),
-                                                                (r) => req.CreateObjectResponseAsync(r));
         }
     }
 }
