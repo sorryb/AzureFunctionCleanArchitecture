@@ -25,6 +25,10 @@ param keyVaultName string = ''
 param appServiceName string = ''
 param sqlServerName string = ''
 param sqlDatabaseName string = ''
+param appServicePlanName string = ''
+param storageAccountName string = ''
+param apiUserAssignedIdentityName string = ''
+param apiServiceName string = ''
 
 @secure()
 param sqlAdminPassword string
@@ -52,6 +56,9 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 // Example usage:
 //   tags: union(tags, { 'azd-service-name': apiServiceName })
 var webServiceName = 'web'
+
+var functionAppName = !empty(apiServiceName) ? apiServiceName : '${abbrs.webSitesFunctions}api-${resourceToken}'
+var deploymentStorageContainerName = 'app-package-${take(functionAppName, 32)}-${take(toLower(uniqueString(functionAppName, resourceToken)), 7)}'
 
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -120,6 +127,96 @@ module webKeyVaultAccess 'core/security/keyvault-access.bicep' = {
     principalId: web.outputs.identityPrincipalId
   }
   scope: rg
+}
+
+// User assigned managed identity to be used by the function app to reach storage and other dependencies
+// Assign specific roles to this identity in the RBAC module
+module apiUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+  name: 'apiUserAssignedIdentity'
+  scope: rg
+  params: {
+    location: location
+    tags: tags
+    name: !empty(apiUserAssignedIdentityName) ? apiUserAssignedIdentityName : '${abbrs.managedIdentityUserAssignedIdentities}api-${resourceToken}'
+  }
+}
+
+// Create an App Service Plan to group applications under the same payment plan and SKU
+module appServicePlan 'br/public:avm/res/web/serverfarm:0.1.1' = {
+  name: 'appserviceplan'
+  scope: rg
+  params: {
+    name: !empty(appServicePlanName) ? appServicePlanName : '${abbrs.webServerFarms}${resourceToken}'
+    sku: {
+      name: 'FC1'
+      tier: 'FlexConsumption'
+    }
+    reserved: true
+    location: location
+    tags: tags
+  }
+}
+
+module api './core/host/api.bicep' = {
+  name: 'api'
+  scope: rg
+  params: {
+    name: functionAppName
+    location: location
+    tags: tags
+    applicationInsightsName: monitoring.outputs.applicationInsightsName
+    appServicePlanId: appServicePlan.outputs.resourceId
+    runtimeName: 'dotnet-isolated'
+    runtimeVersion: '8.0'
+    storageAccountName: storage.outputs.name
+    enableBlob: storageEndpointConfig.enableBlob
+    enableQueue: storageEndpointConfig.enableQueue
+    enableTable: storageEndpointConfig.enableTable
+    deploymentStorageContainerName: deploymentStorageContainerName
+    identityId: apiUserAssignedIdentity.outputs.resourceId
+    identityClientId: apiUserAssignedIdentity.outputs.clientId
+    sqlAdminIdentityId:  database.outputs.sqlAdminIdentityId
+    appSettings: {
+      AZURE_KEY_VAULT_ENDPOINT: keyVault.outputs.endpoint
+      AZURE_SQL_CONNECTION_STRING_KEY: 'Server=${database.outputs.name}${environment().suffixes.sqlServerHostname}; Database=${database.outputs.databaseName}; Authentication=Active Directory Default; User Id=${apiUserAssignedIdentity.outputs.clientId}; TrustServerCertificate=True'
+    }
+    // virtualNetworkSubnetId: vnetEnabled ? serviceVirtualNetwork.outputs.appSubnetID : ''
+    // allowedOrigins: [ webUri ]
+  }
+}
+
+module storage 'br/public:avm/res/storage/storage-account:0.8.3' = {
+  name: 'storage'
+  scope: rg
+  params: {
+    name: !empty(storageAccountName) ? storageAccountName : '${abbrs.storageStorageAccounts}${resourceToken}'
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: false // Disable local authentication methods as per policy
+    dnsEndpointType: 'Standard'
+    // publicNetworkAccess: vnetEnabled ? 'Disabled' : 'Enabled'
+    // networkAcls: vnetEnabled ? {
+    //   defaultAction: 'Deny'
+    //   bypass: 'None'
+    // } : {
+    //   defaultAction: 'Allow'
+    //   bypass: 'AzureServices'
+    // }
+    blobServices: {
+      containers: [{name: deploymentStorageContainerName}]
+    }
+    minimumTlsVersion: 'TLS1_2'  // Enforcing TLS 1.2 for better security
+    location: location
+    tags: tags
+  }
+}
+
+// Define the configuration object locally to pass to the modules
+var storageEndpointConfig = {
+  enableBlob: true  // Required for AzureWebJobsStorage, .zip deployment, Event Hubs trigger and Timer trigger checkpointing
+  enableQueue: false  // Required for Durable Functions and MCP trigger
+  enableTable: false  // Required for Durable Functions and OpenAI triggers and bindings
+  enableFiles: false   // Not required, used in legacy scenarios
+  allowUserIdentityPrincipal: false   // Allow interactive user identity to access for testing and debugging
 }
 
 // Add outputs from the deployment here, if needed.
