@@ -7,3 +7,7 @@ services:
     language: csharp
     project: ./src/Web
     host: appservice
+  api:
+    project: ./src/FunctionApp8.0
+    language: dotnet
+    host: function

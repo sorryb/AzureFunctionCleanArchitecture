@@ -1,16 +1,3 @@
-using System.Security.Claims;
-using CleanArchitecture.Presentation.FunctionApp8;
-using CleanArchitecture8.Application.Common.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-
 var hostBuilder = new HostBuilder()
      .ConfigureFunctionsWorkerDefaults(
     worker =>
