@@ -2,6 +2,7 @@ using System.Security.Claims;
 using CleanArchitecture.Presentation.FunctionApp8;
 using CleanArchitecture8.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
 using Microsoft.Extensions.Configuration;
@@ -9,21 +10,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var hostBuilder = new HostBuilder()
-     .ConfigureFunctionsWorkerDefaults(
-    worker =>
-    {
-        worker.UseNewtonsoftJson();
-        worker.UseMiddleware<ExceptionHandlingMiddleware>();
-    }
-    );
+         .ConfigureFunctionsWorkerDefaults(
+        worker =>
+        {
+            worker.UseNewtonsoftJson();
+            worker.UseMiddleware<ExceptionHandlingMiddleware>();
+        }
+        );
 
-    // remove this block
-        //.ConfigureFunctionsWebApplication((IFunctionsWorkerApplicationBuilder builder) =>
-        //{
-        //     //builder.UseNewtonsoftJson();
-        //}
-        //);
-    // and this from csproj in order to use the ExceptionHandlingMiddleware middleware   <!--<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" />-->
+// remove this block
+//.ConfigureFunctionsWebApplication((IFunctionsWorkerApplicationBuilder builder) =>
+//{
+//   // builder.UseNewtonsoftJson();
+//}
+//);
+// and this from csproj in order to use the ExceptionHandlingMiddleware middleware   <!--<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" />-->
 
 hostBuilder.ConfigureServices((context, services) =>
 {
@@ -43,7 +44,7 @@ hostBuilder.ConfigureServices((context, services) =>
 
 });
 
-//hostBuilder.ConfigureOpenApi();
+hostBuilder.ConfigureOpenApi();
 
 var host = hostBuilder.Build();
 
