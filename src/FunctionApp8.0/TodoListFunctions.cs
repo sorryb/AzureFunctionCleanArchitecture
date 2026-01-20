@@ -17,14 +17,12 @@ namespace CleanArchitecture.Presentation.FunctionApp8
 {
     public class TodoListFunctions
     {
-        private readonly IHttpRequestProcessor processor;
         private readonly ILogger<TodoListFunctions> logger;
         private readonly ISender _sender;
 
-        public TodoListFunctions(IHttpRequestProcessor processor, ILogger<TodoListFunctions> logger, ISender sender)
+        public TodoListFunctions(ILogger<TodoListFunctions> logger, ISender sender)
         {
             this.logger = logger;
-            this.processor = processor;
             _sender = sender;
         }
 

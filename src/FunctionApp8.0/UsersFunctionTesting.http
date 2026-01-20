@@ -1,4 +1,4 @@
-Note: Requires 'REST Client' for VSCode
+#Note: Requires 'REST Client' for VSCode
 
 ### Register a new User
 POST http://localhost:7071/api/user

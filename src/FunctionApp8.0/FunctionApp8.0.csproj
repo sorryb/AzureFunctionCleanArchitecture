@@ -34,9 +34,9 @@
   <ItemGroup>
     <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
   </ItemGroup>
-    <ItemGroup>
-	    <ProjectReference Include="..\Application\Application.csproj" />
-	    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+	  <ProjectReference Include="..\Application\Application.csproj" />
+	  <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
 	
 </Project>

@@ -21,15 +21,13 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
 namespace CleanArchitecture.Presentation.FunctionApp8;
     public class TodoItemsFunctions
     {
-        private readonly IHttpRequestProcessor _processor;
         private readonly ILogger<TodoItemsFunctions> _logger;
 
         private readonly ISender _sender;
 
-        public TodoItemsFunctions(IHttpRequestProcessor processor, ILogger<TodoItemsFunctions> logger, ISender sender)
+        public TodoItemsFunctions(ILogger<TodoItemsFunctions> logger, ISender sender)
         {
             _logger = logger;
-            _processor = processor;
             _sender = sender;
         }
 
