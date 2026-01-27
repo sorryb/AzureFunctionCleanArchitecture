@@ -30,84 +30,169 @@ DDD advocates a richer domain model:
 
 - Domain Events: explicit objects that represent important business state changes (e.g., `OrderCreated`, `UserRegistered`). They capture intent and can be published to other parts of the system.
 
-## Small examples (paraphrased)
+## Traditional Development Model: A Task Creation Example
 
-Traditional controller/service flow (simplified):
+In traditional development, we follow requirements and write logic where the database design dictates the code. Suppose we are building a task creation feature with these rules:
 
+* A Task must have a non-empty title.
+
+* The due date cannot be in the past.
+
+* A log must be recorded after a task is created.
+
+In a traditional **"Anemic"** model, the Task object is just a data carrier, and the logic is scattered in the service:
+
+```C#
+// Anemic Model: Just a "data bag"
+public class Task {
+    public string Title { get; set; }
+    public DateTime DueDate { get; set; }
+    public string Status { get; set; }
+}
+
+// Service layer: Bloated logic, business rules are scattered
+public class TaskService {
+    public void CreateTask(TaskDto dto) {
+        // Validation Rule 1: logic is here or in a Util
+        if (string.IsNullOrEmpty(dto.Title)) throw new Exception("Invalid Title");
+        
+        // Validation Rule 2: logic is in the service
+        if (dto.DueDate < DateTime.Now) throw new Exception("Date in past");
+
+        var task = new Task {
+            Title = dto.Title,
+            DueDate = dto.DueDate,
+            Status = "Created"
+        };
+
+        _taskRepository.Save(task); // Data passed to DAO
+        _logger.Log("Task Created");
+    }
+}
 ```
-// Application service orchestrates the flow
-Account from = accountRepository.findById(fromId);
-Account to = accountRepository.findById(toId);
-transferService.transfer(from, to, new Money(amount));
-messageQueue.send(new TransferEvent(...));
+### The DDD Approach (Rich Model)
+In DDD, business logic is encapsulated inside the domain object. The object is no longer just a "data bag"; it is responsible for its own valid state.
+
+```C#
+// Domain Entity: Encapsulates business logic
+public class Task {
+    public Guid Id { get; private set; }
+    public string Title { get; private set; }
+    public DateTime DueDate { get; private set; }
+
+    public Task(string title, DateTime dueDate) {
+        // Business rules encapsulated in the constructor
+        if (string.IsNullOrWhiteSpace(title)) 
+            throw new DomainException("Title is required.");
+            
+        if (dueDate < DateTime.UtcNow) 
+            throw new DomainException("Due date cannot be in the past.");
+
+        this.Id = Guid.NewGuid();
+        this.Title = title;
+        this.DueDate = dueDate;
+    }
+}
 ```
+Explanation: The validation is pushed down into the Task entity. In professional terms, business rules are encapsulated inside the domain object.
 
-In a DDD view, `transferService` is a domain service that executes the core business rule (debit/credit) while `Account` entities encapsulate debit/credit invariants.
+## Key Design Concepts in DDD
 
-Aggregate root example (addresses under user):
+### 1. Aggregate Root
+Scenario: A TaskList is associated with multiple TaskItems.
 
-```
-class User { 
-  private List<Address> addresses;
-  public void addAddress(Address a) {
-    if (addresses.size() >= 5) throw new AddressLimitExceeded();
-    addresses.add(a);
-  }
+* Traditional: Manage TaskList and TaskItems separately in services.
+
+* DDD: Treat TaskList as the root. You cannot add an item to the list without going through the list’s logic (e.g., checking capacity).
+
+```C#
+public class TaskList {
+    private readonly List<TaskItem> _items = new();
+    public IReadOnlyCollection<TaskItem> Items => _items.AsReadOnly();
+
+    public void AddItem(string title) {
+        // Logic controlled by the aggregate root
+        if (_items.Count >= 10) 
+            throw new DomainException("List is full!");
+            
+        _items.Add(new TaskItem(title));
+    }
 }
 ```
 
-Here the `User` aggregate root enforces the rule limiting addresses.
+### 2. Domain Service vs. Application Service
 
-## Rich model vs Anemic model (registration example)
+- Domain Service: Logic spanning multiple entities (e.g., moving a task from one list to another).
 
-- Anemic: validation and invariants live in service or utilities; the `User` object is a simple data holder.
-- Rich model: `User` constructor or methods validate passwords and enforce invariants, e.g.:
+- Application Service: Orchestrates the process (calling repositories, then domain services, emails).
 
-```
-class User {
-  public User(String username, String password) {
-    if (!isValidPassword(password)) throw new InvalidPassword();
-    this.password = encrypt(password);
-  }
+```C#
+// Domain Service: Handles logic between two TaskLists
+public class TaskTransferService {
+    public void MoveTask(TaskList source, TaskList destination, TaskItem item) {
+        source.RemoveItem(item);
+        destination.AddItem(item.Title);
+    }
+}
+
+// Application Service: Orchestrates, contains no business logic
+public class TaskAppService {
+    public void ExecuteMove(Guid itemId, Guid targetListId) {
+        var item = _itemRepo.Find(itemId);
+        var targetList = _listRepo.Find(targetListId);
+        
+        // Orchestration
+        _transferService.MoveTask(currentList, targetList, item);
+        _notificationService.NotifyUser("Task Moved"); // Infrastructure
+    }
 }
 ```
 
 Putting rules close to the data they protect improves cohesion and reduces scatter.
 
-## Concrete DDD Example: Placing an E-commerce Order
+## A DDD Real-World Example: Completing a Project
 
-Problem: When placing an order the system must validate stock, apply coupons, calculate totals, and persist the order.
+Suppose when a Project is marked "Complete," the system must: validate all tasks are done, update the project status, and notify the owner.
 
-Traditional (service-heavy) implementation often mixes stock checks, price calculations, coupon logic, and persistence in one bloated service. This leads to brittle code and scattered rules.
+### Traditional (Anemic):
 
-DDD approach (rich model):
-- Create an `Order` aggregate that encapsulates order-level invariants and calculations.
-- `OrderItem` value objects check stock availability.
-- `Money` value object handles precise money arithmetic.
-- Coupon rules live in `Coupon` or `Order` methods (e.g., `validateCoupon`).
+```C#
+public class ProjectService {
+    public void CompleteProject(Guid projectId) {
+        var tasks = _db.Tasks.Where(t => t.ProjectId == projectId).ToList();
+        
+        // Logic scattered in Service
+        if (tasks.Any(t => t.Status != "Done")) {
+            throw new Exception("Tasks pending!");
+        }
 
-Example (paraphrased):
-
-```
-class Order {
-  public Order(User user, List<OrderItem> items, Coupon coupon) {
-    items.forEach(i -> i.checkStock());
-    this.total = items.map(OrderItem::subtotal).reduce(Money.ZERO, Money::add);
-    if (coupon != null) { validateCoupon(coupon, user); total = coupon.apply(total); }
-  }
-}
-
-class OrderService { 
-  public Order createOrder(...) {
-    Order order = new Order(...);
-    orderRepository.save(order);
-    domainEventPublisher.publish(new OrderCreatedEvent(order));
-    return order;
-  }
+        var project = _db.Projects.Find(projectId);
+        project.Status = "Completed"; // Pure data change
+        _db.Save();
+    }
 }
 ```
+### DDD (Rich):
 
-Benefits: stock rules and coupon logic are owned by the domain, so when requirements change you modify domain code instead of multiple service/util locations.
+```C#
+public class Project {
+    private List<Task> _tasks;
+    public string Status { get; private set; }
+
+    public void MarkAsComplete() {
+        // Business logic encapsulated in the entity
+        if (_tasks.Any(t => !t.IsCompleted)) {
+            throw new DomainException("Cannot complete project with active tasks.");
+        }
+
+        this.Status = "Completed";
+        // Record Domain Event
+        this.AddEvent(new ProjectCompletedEvent(this.Id));
+    }
+}
+```
+
+The Benefit: When the rule changes (e.g., "Allow completion if only optional tasks are left"), you only change the Project entity. You don't have to "dig" through service layers to find the logic.
 
 ## When to Use DDD
 
