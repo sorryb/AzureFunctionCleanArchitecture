@@ -1,6 +1,6 @@
 # Domain-Driven Design — Real World Example 
 
-This document is an original summary and explanation of the key ideas and examples from the referenced article on Domain-Driven Design (DDD). It captures the main concepts, patterns, and a concrete example (order placement) while rephrasing the original content.
+This document captures the main concepts, patterns, and a concrete example (task placement) while rephrasing the c# code.
 
 ## What is DDD?
 
@@ -21,6 +21,13 @@ DDD advocates a richer domain model:
 - Entities and value objects encapsulate relevant business logic and invariants.
 - Domain services represent operations that span multiple entities.
 - Application services orchestrate use-cases (repositories + domain services + infrastructure) but contain little or no domain logic.
+
+## When Should You Use DDD?
+So, should DDD be used in every situation? Not really — that would be overengineering.
+
+✅ When the business is complex (e.g., e-commerce, finance, ERP)
+✅ When requirements change frequently (90% of internet businesses)
+❌ When it's simple CRUD (admin panels, data reports)
 
 ## Key DDD Concepts
 
@@ -150,6 +157,30 @@ public class TaskAppService {
 
 Putting rules close to the data they protect improves cohesion and reduces scatter.
 
+### 3. Domain Events
+
+**Explanation**: Domain Events are used to explicitly express business state changes. Instead of having the TaskItem directly call an Email Service (which would mix business logic with infrastructure), the entity simply "records" that something happened.
+
+This allows other parts of the system to react to the event (like updating a dashboard or sending a notification) without the TaskItem needing to know those systems exist.
+
+```C#
+public class TaskItem 
+{
+    public bool IsCompleted { get; private set; }
+
+    public void Complete() 
+    {
+        if (this.IsCompleted) return;
+
+        this.IsCompleted = true;
+        
+        // Record domain event to express a state change
+        // This decouples business logic from side effects like Emails
+        this.AddDomainEvent(new TaskCompletedEvent(this.Id, DateTime.UtcNow));
+    }
+}
+```
+
 ## A DDD Real-World Example: Completing a Project
 
 Suppose when a Project is marked "Complete," the system must: validate all tasks are done, update the project status, and notify the owner.
@@ -194,9 +225,25 @@ public class Project {
 
 The Benefit: When the rule changes (e.g., "Allow completion if only optional tasks are left"), you only change the Project entity. You don't have to "dig" through service layers to find the logic.
 
+## Differences Between Traditional Development and DDD
+Let’s briefly summarize the differences between traditional development and DDD.
+
+### Traditional Development:
+
+- Ownership of Business Logic: Scattered across Services, Utils, Controllers
+- Role of the Model: Data carrier (anemic model)
+- Impact on Technical Implementation: Schema is driven by database table design
+
+### DDD:
+
+- Ownership of Business Logic: Encapsulated in domain entities or domain services
+- Role of the Model: Business model that carries behavior (rich model)
+- Impact on Technical Implementation: Schema is driven by business needs
+
 ## When to Use DDD
 
 - DDD is most valuable for complex domains with evolving business rules (e-commerce, finance, ERP).
+- DDD can be used when requirements changed offen
 - Avoid DDD for simple CRUD applications or small admin panels — it can be overengineering.
 
 Use DDD when: changing business rules should ideally require only domain-level changes and not rip through controllers and DAOs.

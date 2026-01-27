@@ -1,7 +1,13 @@
-﻿# Azure Function Api and Asp.Net Web Api with Clean Architecture .NET 8
+﻿# Azure Function Api and Asp.Net Web Api with DDD - Clean Architecture .NET 8
 
 The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/CleanArchitecture8) version 8.0.6.
 
+## What is DDDused here?
+DDD (Domain-Driven Design) is a software development methodology for building complex systems by focusing on the business domain. Its core idea is to tightly integrate the code structure with real business needs.
+
+[More about DDD](docs/DDD_RealWorldExample.md)
+
+## App structure
 The presentation layer has two application:
 
 * Web Api C# application [ReadMe](./src/Web/ReadMe.md)
