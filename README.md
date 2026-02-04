@@ -2,10 +2,11 @@
 
 The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/CleanArchitecture8) version 8.0.6.
 
-## What is DDDused here?
+## What is DDD used here?
 DDD (Domain-Driven Design) is a software development methodology for building complex systems by focusing on the business domain. Its core idea is to tightly integrate the code structure with real business needs.
 
-[More about DDD](docs/DDD_RealWorldExample.md)
+> * [More about DDD](docs/DDD_RealWorldExample.md)
+> * [Best‑practice architecture for .NET Core projects](docs/best-practice-architecture-dotnet-core.md)
 
 ## App structure
 The presentation layer has two application:
